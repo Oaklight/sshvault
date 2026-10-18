@@ -7,19 +7,7 @@ on:
     branches: [master]
 
 jobs:
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-python@v6
-        with:
-          python-version: "3.10"
-      - name: Install
-        run: pip install -e ".[dev]"
-      - name: Pre-commit
-        uses: pre-commit/action@v3.0.1
-
-  test:
+  lint-and-test:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -27,28 +15,55 @@ jobs:
         python-version: ["3.10", "3.11", "3.12", "3.13"]
     steps:
       - uses: actions/checkout@v6
-      - uses: actions/setup-python@v6
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Install
-        run: pip install -e ".[dev,test]"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev,test]"
+
+      - name: Run pre-commit checks
+        if: matrix.python-version == '3.10'
+        uses: pre-commit/action@v3.0.1
+
       - name: Run tests
         run: pytest tests/ -v --tb=short
 
-  build:
-    needs: [lint, test]
+  build-and-smoke-test:
+    needs: lint-and-test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: actions/setup-python@v6
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v6
         with:
           python-version: "3.12"
-      - name: Build
+
+      - name: Build wheel + sdist
         run: |
-          pip install build twine
+          python -m pip install --upgrade pip build twine
           python -m build
           twine check dist/*
+
+      - name: Install from wheel in a clean venv
+        run: |
+          python -m venv /tmp/smoke-venv
+          /tmp/smoke-venv/bin/pip install --upgrade pip
+          /tmp/smoke-venv/bin/pip install dist/*.whl
+
+      - name: Smoke test the console script and module entry point
+        run: |
+          /tmp/smoke-venv/bin/sshvault --version
+          /tmp/smoke-venv/bin/python -m sshvault --version
+          /tmp/smoke-venv/bin/sshvault --help >/dev/null
+
       - uses: actions/upload-artifact@v4
         with:
           name: dist
-          path: dist/
+          path: dist/*
+          retention-days: 7

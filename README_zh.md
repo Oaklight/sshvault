@@ -1,6 +1,17 @@
-# sshvault
+<h1 align="center">sshvault</h1>
 
-用 Bitwarden 备份和恢复你的 SSH 私钥**和** SSH 配置文件。
+<p align="center">
+  <a href="https://pypi.org/project/sshvault/"><img src="https://img.shields.io/pypi/v/sshvault?color=green" alt="PyPI"></a>
+  <a href="https://github.com/Oaklight/sshvault/releases/latest"><img src="https://img.shields.io/github/v/release/Oaklight/sshvault?color=green" alt="Release"></a>
+  <a href="https://github.com/Oaklight/sshvault/actions/workflows/ci.yml"><img src="https://github.com/Oaklight/sshvault/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-green.svg" alt="MIT"></a>
+</p>
+
+<p align="center">
+  <a href="README.md">English</a> | <a href="README_zh.md">中文</a>
+</p>
+
+**sshvault** — 用 Bitwarden 备份和恢复你的 SSH 私钥**和** SSH 配置文件。
 
 `sshvault` 把 `~/.ssh/keys/*`、`~/.ssh/config`、`~/.ssh/config.d/*` 备份进
 Bitwarden，换机器时一条命令就能恢复。它是两个旧工具的小型零依赖替代品：

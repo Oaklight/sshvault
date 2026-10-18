@@ -1,6 +1,17 @@
-# sshvault
+<h1 align="center">sshvault</h1>
 
-Back up and restore your SSH keys **and** SSH config files with Bitwarden.
+<p align="center">
+  <a href="https://pypi.org/project/sshvault/"><img src="https://img.shields.io/pypi/v/sshvault?color=green" alt="PyPI"></a>
+  <a href="https://github.com/Oaklight/sshvault/releases/latest"><img src="https://img.shields.io/github/v/release/Oaklight/sshvault?color=green" alt="Release"></a>
+  <a href="https://github.com/Oaklight/sshvault/actions/workflows/ci.yml"><img src="https://github.com/Oaklight/sshvault/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-green.svg" alt="MIT"></a>
+</p>
+
+<p align="center">
+  <a href="README.md">English</a> | <a href="README_zh.md">中文</a>
+</p>
+
+**sshvault** — Back up and restore your SSH keys **and** SSH config files with Bitwarden.
 
 `sshvault` keeps a copy of `~/.ssh/keys/*`, `~/.ssh/config` and `~/.ssh/config.d/*`
 in your Bitwarden vault, so a new machine can be brought back to a working state
