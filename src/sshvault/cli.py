@@ -42,6 +42,12 @@ def _add_location_options(parser: argparse.ArgumentParser) -> None:
     """Paths and vault naming. Each also has an environment variable."""
     group = parser.add_argument_group("locations and naming")
     group.add_argument(
+        "--config-file",
+        metavar="PATH",
+        help="config file (default: ~/.config/sshvault/config; "
+        "env SSHVAULT_CONFIG_FILE)",
+    )
+    group.add_argument(
         "--ssh-dir",
         metavar="PATH",
         help="SSH directory (default: ~/.ssh; env SSHVAULT_SSH_DIR)",

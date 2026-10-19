@@ -115,17 +115,34 @@ so an existing vault keeps working without migration.
 
 ## Configuration
 
-Every location is a flag and an environment variable; the flag wins.
+Each value resolves in this order: command-line flag, environment variable, key
+in the config file, built-in default.
 
-| Flag | Environment | Default |
-| --- | --- | --- |
-| `--ssh-dir` | `SSHVAULT_SSH_DIR` | `~/.ssh` |
-| `--keys-dir` | `SSHVAULT_KEYS_DIR` | `<ssh-dir>/keys` |
-| `--config-dir` | `SSHVAULT_CONFIG_DIR` | `<ssh-dir>/config.d` |
-| `--main-config` | `SSHVAULT_MAIN_CONFIG` | `config` |
-| `--keys-prefix` | `SSHVAULT_KEYS_PREFIX` | `SSHKeys__` |
-| `--config-prefix` | `SSHVAULT_CONFIG_PREFIX` | `SSHConfig__` |
-| `--unlock-cmd` | `SSHVAULT_UNLOCK_CMD` | none |
+| Flag | Environment | Config key | Default |
+| --- | --- | --- | --- |
+| `--config-file` | `SSHVAULT_CONFIG_FILE` | — | `~/.config/sshvault/config` |
+| `--ssh-dir` | `SSHVAULT_SSH_DIR` | `ssh_dir` | `~/.ssh` |
+| `--keys-dir` | `SSHVAULT_KEYS_DIR` | `keys_dir` | `<ssh-dir>/keys` |
+| `--config-dir` | `SSHVAULT_CONFIG_DIR` | `config_dir` | `<ssh-dir>/config.d` |
+| `--main-config` | `SSHVAULT_MAIN_CONFIG` | `main_config` | `config` |
+| `--keys-prefix` | `SSHVAULT_KEYS_PREFIX` | `keys_prefix` | `SSHKeys__` |
+| `--config-prefix` | `SSHVAULT_CONFIG_PREFIX` | `config_prefix` | `SSHConfig__` |
+| `--unlock-cmd` | `SSHVAULT_UNLOCK_CMD` | `unlock_cmd` | none |
+
+### Config file
+
+`~/.config/sshvault/config` is `key = value` (or `key=value`), one per line, with
+`#` comments:
+
+```ini
+# Unlock Bitwarden through a helper that prints the env-file path.
+unlock_cmd = bw-unlock-session
+```
+
+Prefer this over a `.bashrc` export: a shell profile is only read by
+interactive shells, so cron, systemd units and non-bash shells never see it,
+while the config file is read however the process was started. Environment
+variables still override it, and flags override both.
 
 ### Unlocking
 

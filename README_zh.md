@@ -105,17 +105,30 @@ sshvault config pull   [--dry-run] [--file REL] [--allow-new] [--force]
 
 ## 配置项
 
-每个位置都同时提供命令行参数和环境变量，参数优先。
+每个配置值的解析顺序是：命令行参数 → 环境变量 → 配置文件 → 默认值。
 
-| 参数 | 环境变量 | 默认值 |
-| --- | --- | --- |
-| `--ssh-dir` | `SSHVAULT_SSH_DIR` | `~/.ssh` |
-| `--keys-dir` | `SSHVAULT_KEYS_DIR` | `<ssh-dir>/keys` |
-| `--config-dir` | `SSHVAULT_CONFIG_DIR` | `<ssh-dir>/config.d` |
-| `--main-config` | `SSHVAULT_MAIN_CONFIG` | `config` |
-| `--keys-prefix` | `SSHVAULT_KEYS_PREFIX` | `SSHKeys__` |
-| `--config-prefix` | `SSHVAULT_CONFIG_PREFIX` | `SSHConfig__` |
-| `--unlock-cmd` | `SSHVAULT_UNLOCK_CMD` | 无 |
+| 参数 | 环境变量 | 配置键 | 默认值 |
+| --- | --- | --- | --- |
+| `--config-file` | `SSHVAULT_CONFIG_FILE` | — | `~/.config/sshvault/config` |
+| `--ssh-dir` | `SSHVAULT_SSH_DIR` | `ssh_dir` | `~/.ssh` |
+| `--keys-dir` | `SSHVAULT_KEYS_DIR` | `keys_dir` | `<ssh-dir>/keys` |
+| `--config-dir` | `SSHVAULT_CONFIG_DIR` | `config_dir` | `<ssh-dir>/config.d` |
+| `--main-config` | `SSHVAULT_MAIN_CONFIG` | `main_config` | `config` |
+| `--keys-prefix` | `SSHVAULT_KEYS_PREFIX` | `keys_prefix` | `SSHKeys__` |
+| `--config-prefix` | `SSHVAULT_CONFIG_PREFIX` | `config_prefix` | `SSHConfig__` |
+| `--unlock-cmd` | `SSHVAULT_UNLOCK_CMD` | `unlock_cmd` | 无 |
+
+### 配置文件
+
+`~/.config/sshvault/config` 每行一个 `key = value`（也可写 `key=value`），`#` 开头是注释：
+
+```ini
+# 通过一个打印 env 文件路径的助手来解锁 Bitwarden
+unlock_cmd = bw-unlock-session
+```
+
+比写进 `.bashrc` 更可靠：shell 配置只对交互式 shell 生效，cron、systemd 单元和非 bash shell
+都读不到；配置文件则不区分进程是怎么起来的。环境变量仍然能覆盖它，命令行参数覆盖两者。
 
 ### 解锁
 
